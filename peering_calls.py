@@ -1,26 +1,21 @@
 import ssl
 from urllib.request import urlopen, HTTPError
 import json
+import requests
 
 
 def get_asn_ix(asn):
     ix = {}
-    context = ssl._create_unverified_context()  # Hacky way to get round SSL Verification Failure below
-    # urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:833)>
     try:
-        # Call to peeringDB API with ASN Number, returns json format details
-        http_obj = urlopen("https://peeringdb.com/api/net?asn=%s" % asn, context=context)
-        #"https://<username>:<password>@peeringdb.com/api/net?asn=%s"
-        http_obj_dict = json.load(http_obj) # Load the recived data into json format for manipulation
-        net_id = http_obj_dict["data"][0]["id"] # ID is the peeringDB index for an AS Number
-        #print("ID: {}".format(net_id))
-        net_http_obj = urlopen("https://peeringdb.com/api/net/%s" % net_id, context=context)    # Using this ID, API call to peeringDB to get more detailed info
-        net_http_obj_dict = json.load(net_http_obj) # Load the received data into json format for manipulation
-        com_http_obj = urlopen("https://peeringdb.com/api/net/%s" % net_id, context=context)
-        com_http_obj_dict = json.load(com_http_obj)
+        # REST API Calls
+        obj = requests.get("https://peeringdb.com/api/net?asn=%s" % asn)
+        obj_dict = obj.json()
+        net_id = obj_dict["data"][0]["id"] # ID is the peeringDB index for an AS Number
+        net_obj = requests.get("https://peeringdb.com/api/net/%s" % net_id) # Using this ID, API call to get more detailed information
+        net_obj_dict = net_obj.json()
 
         # Populate a dictionary of IX name and ID per AS
-        for ixlan in net_http_obj_dict["data"][0]["netixlan_set"]:
+        for ixlan in net_obj_dict["data"][0]["netixlan_set"]:
             ix[ixlan["ix_id"]] =  ixlan["name"]
 
         return ix
@@ -31,23 +26,18 @@ def get_asn_ix(asn):
 def get_asn_ips(asn):
     ip_dets = {}
     ip_details = []
-    context = ssl._create_unverified_context()  # Hacky way to get round SSL Verification Failure below
-    # urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:833)>
     try:
-        # Call to peeringDB API with ASN Number, returns json format details
-        http_obj = urlopen("https://peeringdb.com/api/net?asn=%s" % asn, context=context)
-        #"https://<username>:<password>@peeringdb.com/api/net?asn=%s"
-        http_obj_dict = json.load(http_obj) # Load the recived data into json format for manipulation
-        net_id = http_obj_dict["data"][0]["id"] # ID is the peeringDB index for an AS Number
-        #print("ID: {}".format(net_id))
-        net_http_obj = urlopen("https://peeringdb.com/api/net/%s" % net_id, context=context)    # Using this ID, API call to peeringDB to get more detailed info
-        net_http_obj_dict = json.load(net_http_obj) # Load the received data into json format for manipulation
-        com_http_obj = urlopen("https://peeringdb.com/api/net/%s" % net_id, context=context)
-        com_http_obj_dict = json.load(com_http_obj)
+        # REST API Calls
+        # Call to peeringDB API with ASN Number, returns json format
+        obj = requests.get("https://peeringdb.com/api/net?asn=%s" % asn)
+        obj_dict = obj.json()
+        net_id = obj_dict["data"][0]["id"] # ID is the peeringDB index for the AS Number
+        net_obj = requests.get("https://peeringdb.com/api/net/%s" % net_id)
+        net_obj_dict = net_obj.json()
 
-        # Populate a dictionary of IX name and ID per AS
-        for ixlan in net_http_obj_dict["data"][0]["netixlan_set"]:
-            ip_dets[ixlan["id"]] =  ixlan["name"] , ixlan["ipaddr4"], ixlan["ipaddr6"]
+        # Populate a dictionary of IX id with Name, IPv4 and IPv6
+        for ixlan in net_obj_dict["data"][0]["netixlan_set"]:
+            ip_dets[ixlan["id"]] = ixlan["name"], ixlan["ipaddr4"], ixlan["ipaddr6"]
             ip_details.append(ip_dets[ixlan["id"]])
 
         return ip_details
@@ -57,21 +47,17 @@ def get_asn_ips(asn):
         return
 
 def get_prefix_and_name(asn):
-    context = ssl._create_unverified_context()  # Hacky way to get round SSL Verification Failure below
-    # urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:833)>
     try:
-        # Call to peeringDB API with ASN Number, returns json format details
-        http_obj = urlopen("https://peeringdb.com/api/net?asn=%s" % asn, context=context)
-        #"https://<username>:<password>@peeringdb.com/api/net?asn=%s"
-        http_obj_dict = json.load(http_obj) # Load the recived data into json format for manipulation
-        net_id = http_obj_dict["data"][0]["id"] # ID is the peeringDB index for an AS Number
-        #print("ID: {}".format(net_id))
-        net_http_obj = urlopen("https://peeringdb.com/api/net/%s" % net_id, context=context)    # Using this ID, API call to peeringDB to get more detailed info
-        net_http_obj_dict = json.load(net_http_obj) # Load the received data into json format for manipulation
+        # REST API Calls
+        obj = requests.get("https://peeringdb.com/api/net?asn=%s" % asn)
+        obj_dict = obj.json()
+        net_id = obj_dict["data"][0]["id"] # ID is the peeringDB index for an AS Number
+        net_obj = requests.get("https://peeringdb.com/api/net/%s" % net_id)
+        net_obj_dict = net_obj.json()
 
-        desc = net_http_obj_dict["data"][0]["name"]
-        ipv4Prefixes = net_http_obj_dict["data"][0]["info_prefixes4"]
-        ipv6Prefixes = net_http_obj_dict["data"][0]["info_prefixes6"]
+        desc = net_obj_dict["data"][0]["name"]
+        ipv4Prefixes = net_obj_dict["data"][0]["info_prefixes4"]
+        ipv6Prefixes = net_obj_dict["data"][0]["info_prefixes6"]
 
         return desc, ipv4Prefixes, ipv6Prefixes
 

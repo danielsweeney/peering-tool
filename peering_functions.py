@@ -2,7 +2,7 @@ from peering_calls import get_asn_ix, get_asn_ips, get_prefix_and_name
 import ssl
 from urllib.request import urlopen, HTTPError
 import json
-import xlsxwriter 
+import xlsxwriter
 
 def compare(asn1, asn2):
     local_ix = get_asn_ix(asn1)
@@ -26,7 +26,7 @@ def list_IX(asn):
         peerlist = {}
         #with open('peers.csv', 'w', encoding='utf-8') as f:
         #peer_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL,  lineterminator = '\n')
-        
+
         workbook = xlsxwriter.Workbook('Peers-AS' + asn + '.xlsx')
         #worksheet = workbook.add_worksheet('All Peers IX')
 
@@ -70,24 +70,24 @@ def list_IX(asn):
 def configure(asn1, asn2):
 
     our_IX = {
-    "NYIIX": ["nwk1-er1", "nyiix-peers", "nyiix-na-only", "ipv6-nyiix-peers", "ipv6-nyiix-na-only"],
-    "LINX LON1: Main": ["lthn-er1", "LINX-Peers", "LINX-Peers-for-eu-only", "ipv6-LINX-Peers", "NO REGIONAL IPV6"],
-    "TorIX": ["tor1-rt1", "torix-peers", "torix-na-only", "ipv6-torix-peers", "ipv6-torix-na-only"],
-    "JPIX TOKYO": ["jpn1-rt1", "jpix-peers", "jpix-asia-only", "ipv6-jpix-peers", "ipv6-jpix-asia-only"],
-    "MIX-IT": ["mil1-bb-pex1", "MIX-Peers", "MIX-Peers-for-eu-only", "ipv6-Mix-Peers", "NO REGIONAL IPV6"],
-    "HKIX: HKIX Peering LAN": ["hkg1-er1", "hkix-peers", "hkix-asia-only", "ipv6-hkix-peers", "ipv6-hkix-asia-only"],
-    "INEX LAN1: INEX LAN1": ["dub2-er1", "inex-peers", "inex-peers-for-eu-only", "ipv6-inex-peers", "NO REGIONAL IPV6"],
-    "JPNAP Tokyo: Peering": ["jpn1-rt1", "jpnap-peers", "jpnap-asia-only", "ipv6-jpnap-peers", "ipv6-jpnap-asia-only"],
-    "Equinix Hong Kong": ["hkg1-er1", "equinix-peers", "equinix-asia-only", "ipv6-equinix-peers", "ipv6-equinix-asia-only"],
-    "CoreSite - Any2 California": ["lax1-er1", "any2-peers", "any2-na-only", "ipv6-any2-peers", "ipv6-any2-na-only"],
-    "Equinix Singapore": ["sgp1-er1", "equinix-peers", "equinix-asia-only", "NO IPV6", "NO REGIONAL IPV6"],
-    "Equinix Tokyo": ["jpn1-rt1", "equinix-peers", "equinix-asia-only", "ipv6-equinix-peers", "ipv6-equinix-asia-only"],
-    "Equinix Paris: Equinix IX - PA Metro": ["pth2-er1", "equinix-peers", "equinix-peers-for-eu-only", "ipv6-equinix-peers", "NO REGIONAL IPV6"],
-    "DE-CIX New York: DE-CIX New York Peering LAN": ["nwk1-er1", "decix-peers", "decix-na-only", "ipv6-decix-peers", "ipv6-decix-na-only"],
-    "TPIX-TW": ["twn1-bb-pex2", "tpix-peers", "tpix-asia-only", "ipv6-tpix-peers", "ipv6-tpix-asia-only"],
-    "Equinix Chicago": ["chi1-bb-pex1", "equinix-peers", "equinix-na-only", "ipv6-equinix-peers", "ipv6-equinix-na-only"],
-    "BIX.BG: Main": ["sof1-bb-pex1", "bix-peers", "bix-peers-for-eu-only", "ipv6-bix-peers", "NO REGIONAL IPV6"],
-    "AMS-IX": ["ams1-bb-er1", "amsix-peers", "amsix-peers-for-eu-only", "ipv6-amsix-peers", "NO REGIONAL IPV6"]
+    "NYIIX": ["nwk1-router", "nyiix-peers", "nyiix-na-only", "ipv6-nyiix-peers", "ipv6-nyiix-na-only"],
+    "LINX LON1: Main": ["lthn-router", "LINX-Peers", "LINX-Peers-for-eu-only", "ipv6-LINX-Peers", "NO REGIONAL IPV6"],
+    "TorIX": ["tor1-router", "torix-peers", "torix-na-only", "ipv6-torix-peers", "ipv6-torix-na-only"],
+    "JPIX TOKYO": ["jpn1-router", "jpix-peers", "jpix-asia-only", "ipv6-jpix-peers", "ipv6-jpix-asia-only"],
+    "MIX-IT": ["mil1-bb-router", "MIX-Peers", "MIX-Peers-for-eu-only", "ipv6-Mix-Peers", "NO REGIONAL IPV6"],
+    "HKIX: HKIX Peering LAN": ["hkg1-router", "hkix-peers", "hkix-asia-only", "ipv6-hkix-peers", "ipv6-hkix-asia-only"],
+    "INEX LAN1: INEX LAN1": ["dub2-router", "inex-peers", "inex-peers-for-eu-only", "ipv6-inex-peers", "NO REGIONAL IPV6"],
+    "JPNAP Tokyo: Peering": ["jpn1-router", "jpnap-peers", "jpnap-asia-only", "ipv6-jpnap-peers", "ipv6-jpnap-asia-only"],
+    "Equinix Hong Kong": ["hkg1-router", "equinix-peers", "equinix-asia-only", "ipv6-equinix-peers", "ipv6-equinix-asia-only"],
+    "CoreSite - Any2 California": ["lax1-router", "any2-peers", "any2-na-only", "ipv6-any2-peers", "ipv6-any2-na-only"],
+    "Equinix Singapore": ["sgp1-router", "equinix-peers", "equinix-asia-only", "NO IPV6", "NO REGIONAL IPV6"],
+    "Equinix Tokyo": ["jpn1-router", "equinix-peers", "equinix-asia-only", "ipv6-equinix-peers", "ipv6-equinix-asia-only"],
+    "Equinix Paris: Equinix IX - PA Metro": ["pth2-router", "equinix-peers", "equinix-peers-for-eu-only", "ipv6-equinix-peers", "NO REGIONAL IPV6"],
+    "DE-CIX New York: DE-CIX New York Peering LAN": ["nwk1-router", "decix-peers", "decix-na-only", "ipv6-decix-peers", "ipv6-decix-na-only"],
+    "TPIX-TW": ["twn1-router", "tpix-peers", "tpix-asia-only", "ipv6-tpix-peers", "ipv6-tpix-asia-only"],
+    "Equinix Chicago": ["chi1-router", "equinix-peers", "equinix-na-only", "ipv6-equinix-peers", "ipv6-equinix-na-only"],
+    "BIX.BG: Main": ["sof1-router", "bix-peers", "bix-peers-for-eu-only", "ipv6-bix-peers", "NO REGIONAL IPV6"],
+    "AMS-IX": ["ams1-router", "amsix-peers", "amsix-peers-for-eu-only", "ipv6-amsix-peers", "NO REGIONAL IPV6"]
     }
     #print(our_IX["NYIIX"])
 
@@ -135,7 +135,7 @@ def configure(asn1, asn2):
                     if common == ix[0]:
                         ix_name, ipv4, ipv6 = ix[0], ix[1], ix[2]
                         group = our_IX[ix_name]
-                        
+
                         #print("ON ROUTER {}".format(group[0]))
                         #print('set protocols bgp group {0} neighbor {1} description "AS{2} ({3})"'.format(group[2], ipv4, asn2, desc))
                         #print("set protocols bgp group {0} neighbor {1} family inet any prefix-limit maximum {2}".format(group[2], ipv4, ipv4Prefixes))
